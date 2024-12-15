@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kosentrasi</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000000;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .pertanyaan {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 0 10px #ffffff,
+                         0 0 20px #ffffff,
+                         0 0 30px #ffffff,
+                         0 0 40px #0ff;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #ffffff,
+                            0 0 20px #ffffff,
+                            0 0 30px #0ff;
+            }
+            to {
+                text-shadow: 0 0 20px #ffffff,
+                            0 0 30px #ffffff,
+                            0 0 40px #0ff,
+                            0 0 50px #0ff;
+            }
+        }
+
+        .tombol-area {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 300px;
+        }
+
+        .tombol-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 50vh;
+            pointer-events: none;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100px;
+            touch-action: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            transition: box-shadow 0.3s ease;
+        }
+
+        #tombolYa {
+            background-color: #006aff;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        #tombolTidak {
+            background-color: #ff0101;
+        }
+
+        #tombolYa:hover {
+            background-color: #003cff;
+            box-shadow: 0 0 20px rgba(0, 106, 255, 0.7);
+        }
+
+        #tombolTidak:hover {
+            background-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 1, 1, 0.7);
+        }
+
+        .emot {
+            position: fixed;
+            font-size: 24px;
+            pointer-events: none;
+            animation: jatuh 2s linear forwards;
+        }
+
+        @keyframes jatuh {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pertanyaan">Selesaikan Tugas Besar?</div>
+    <div class="tombol-area">
+        <button id="tombolYa" class="btn">Ya</button>
+        <button id="tombolTidak" class="btn">Tidak</button>
+    </div>
+
+    <script>
+        const tombolYa = document.getElementById('tombolYa');
+        const tombolTidak = document.getElementById('tombolTidak');
+        const container = document.querySelector('.tombol-area');
+        const pertanyaan = document.querySelector('.pertanyaan');
+        let kecepatanGerak = 0.3;
+
+        function resetPosisiTombol() {
+            tombolYa.style.position = 'static';
+            tombolYa.style.transition = 'none';
+            kecepatanGerak = 0.3;
+        }
+
+        function buatEmot(jenis) {
+            const emots = jenis === 'cinta' ? ['🥇', '🥈', '🥉', '✨', '📈'] : ['😢', '😭', '🙃', '😪', '😥'];
+            for(let i = 0; i < 15; i++) {
+                const emot = document.createElement('div');
+                emot.className = 'emot';
+                emot.textContent = emots[Math.floor(Math.random() * emots.length)];
+                emot.style.left = Math.random() * window.innerWidth + 'px';
+                document.body.appendChild(emot);
+                
+                setTimeout(() => {
+                    emot.remove();
+                }, 2000);
+            }
+        }
+
+        tombolYa.addEventListener('mouseover', () => {
+            const containerRect = document.body.getBoundingClientRect();
+            const tombolRect = tombolYa.getBoundingClientRect();
+            
+            const padding = 20;
+            const maxX = containerRect.width - tombolRect.width - padding;
+            const maxY = containerRect.height - tombolRect.height - padding;
+            
+            const randomX = Math.random() * maxX + padding/2;
+            const randomY = Math.random() * maxY + padding/2;
+            
+            tombolYa.style.position = 'fixed';
+            tombolYa.style.transition = `all ${kecepatanGerak}s ease`;
+            tombolYa.style.left = randomX + 'px';
+            tombolYa.style.top = randomY + 'px';
+            
+            kecepatanGerak = Math.max(0.1, kecepatanGerak - 0.02);
+        });
+
+        tombolYa.addEventListener('click', () => {
+            alert('Yeay! Kamu Bisa! 🔥');
+            pertanyaan.innerHTML = '🔥🔥 GASS TERUSSS! 🔥🔥';
+            buatEmot('cinta');
+        });
+
+        tombolTidak.addEventListener('click', () => {
+            alert('Yah DAH LAH NYERAH AJA 😢');
+            buatEmot('sedih');
+            resetPosisiTombol();
+        });
+    </script>
+</body>
+</html>
